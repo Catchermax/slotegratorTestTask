@@ -7,10 +7,10 @@ group 'org.example'
 version '1.0-SNAPSHOT'
 
 def restAssuredVersion = '4.3.3'
-def cucumberVersion = '4.7.4'
-def junitVersion = '5.5.0'
+def cucumberVersion = '6.10.0'
+def junitVersion = '5.7.1'
 def allureVersion = '2.8.1'
-def allurePluginVersion = '2.13.0'
+def allurePluginVersion = '2.13.8'
 def selenideVersion = '5.19.0'
 
 repositories {
@@ -19,54 +19,56 @@ repositories {
 
 dependencies {
     testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
+    implementation group: 'io.rest-assured', name: 'json-schema-validator', version: '4.3.3'
+    implementation group: 'org.json', name: 'json', version: '20201115'
+    implementation 'com.github.javafaker:javafaker:1.0.2'
 
     testImplementation "io.cucumber:cucumber-java8:${cucumberVersion}"
     testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
-    testImplementation "io.qameta.allure:allure-cucumber4-jvm:${allurePluginVersion}"
-
+    testImplementation "io.qameta.allure:allure-cucumber5-jvm:${allurePluginVersion}"
     implementation "com.codeborne:selenide:${selenideVersion}"
     implementation "io.qameta.allure:allure-selenide:${allurePluginVersion}"
-
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testRuntimeOnly "org.junit.vintage:junit-vintage-engine:${junitVersion}"
+    testImplementation('org.junit.platform:junit-platform-runner:1.7.1')
 }
 
 test {
     useJUnitPlatform()
 }
 
-configurations {
-    cucumberRuntime {
-        extendsFrom testImplementation
-    }
-}
+//configurations {
+//    cucumberRuntime {
+//        extendsFrom testImplementation
+//    }
+//}
 
 
-task cucumber() {
-    dependsOn assemble, compileTestJava
-    doLast {
-        javaexec {
-            systemProperty("allure.results.directory", "build/allure-results")
+//task cucumber() {
+//    dependsOn assemble, compileTestJava
+//    doLast {
+//        javaexec {
+//            systemProperty("allure.results.directory", "build/allure-results")
+//
+//            main = "io.cucumber.core.cli.Main"
+//            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+//            args = ['--plugin', 'pretty',
+//                    '--plugin', 'io.qameta.allure.cucumber4jvm.AllureCucumber4Jvm',
+//                    '--glue',
+//                    'stepdefs', 'src/test/resources']
+//        }
+//    }
+//}
 
-            main = "io.cucumber.core.cli.Main"
-            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-            args = ['--plugin', 'pretty',
-                    '--plugin', 'io.qameta.allure.cucumber4jvm.AllureCucumber4Jvm',
-                    '--glue',
-                    'stepdefs', 'src/test/resources']
-        }
-    }
-}
-
-allure {
-    version = allureVersion
-    autoconfigure = true
-    aspectjweaver = true
-}
-
-cucumber.finalizedBy 'allureReport'
+//allure {
+//    version = allureVersion
+//    autoconfigure = true
+//    aspectjweaver = true
+//}
+//
+//cucumber.finalizedBy 'allureReport'
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL

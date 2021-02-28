@@ -44,3 +44,5 @@ hs_err_pid*
 #other
 .allure
 .idea
+src/test/java/.DS_Store
+src/test/java/uiTests/.DS_Store
