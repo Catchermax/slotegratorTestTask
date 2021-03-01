@@ -168,6 +168,143 @@ public class ApiTests {
                 .statusCode(422);
     }
 
+    @Test
+    void authorizationViaCreatedPlayer() {
+        String password = Base64.encodeBase64String(faker.letterify("????????").getBytes(StandardCharsets.UTF_8));
+        Gson gson = new Gson();
+
+        DataPlayer dataPlayer = new DataPlayer(
+                faker.name().username(),
+                password,
+                password,
+                faker.letterify("????????@example.com"),
+                null,
+                null,
+                null
+        );
+
+        given()
+                .header("Authorization", "Bearer " + guestToken)
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(dataPlayer))
+                .when()
+                .post("http://test-api.d6.dev.devcaz.com/v2/players")
+                .then()
+                .statusCode(201);
+
+        String body = "{\"grant_type\":\"password\",\"username\":\"" + dataPlayer.username + "\",\"password\":\"" + dataPlayer.password_repeat + "\"}";
+
+        given()
+                .auth()
+                .preemptive()
+                .basic(Constants.GUEST_LOGIN, Constants.GUEST_PASSWORD)
+                .contentType(ContentType.JSON)
+                .body(body)
+                .when()
+                .post("http://test-api.d6.dev.devcaz.com/v2/oauth2/token")
+                .then()
+                .statusCode(200)
+                .body(matchesJsonSchemaInClasspath("schema/tokenGuestSchema.json"));
+    }
+
+    @Test
+    void getPlayerProfileData() {
+        String password = Base64.encodeBase64String(faker.letterify("????????").getBytes(StandardCharsets.UTF_8));
+        Gson gson = new Gson();
+        String idPlayer;
+        String token;
+
+        DataPlayer dataPlayer = new DataPlayer(
+                faker.name().username(),
+                password,
+                password,
+                faker.letterify("????????@example.com"),
+                null,
+                null,
+                null
+        );
+
+        //создаем юзера, заодно возвращаем его айди
+        idPlayer = given()
+                .header("Authorization", "Bearer " + guestToken)
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(dataPlayer))
+                .when()
+                .post("http://test-api.d6.dev.devcaz.com/v2/players")
+                .getBody().jsonPath().getString("id");
+
+        //получаем токен
+        String body = "{\"grant_type\":\"password\",\"username\":\"" + dataPlayer.username + "\",\"password\":\"" + dataPlayer.password_repeat + "\"}";
+
+        token = given()
+                .auth()
+                .preemptive()
+                .basic(Constants.GUEST_LOGIN, Constants.GUEST_PASSWORD)
+                .contentType(ContentType.JSON)
+                .body(body)
+                .when()
+                .post("http://test-api.d6.dev.devcaz.com/v2/oauth2/token")
+                .getBody().jsonPath().getString("access_token");
+
+        //получаем данные
+        given()
+                .header("Authorization", "Bearer " + token)
+                .when()
+                .get("http://test-api.d6.dev.devcaz.com/v2/players/" + idPlayer)
+                .then()
+                .statusCode(200)
+                .body(matchesJsonSchemaInClasspath("schema/createUserSchema.json"));
+    }
+
+    //дописать получение другого гостя
+    @Test
+    void getAnotherPlayerData() {
+        String password = Base64.encodeBase64String(faker.letterify("????????").getBytes(StandardCharsets.UTF_8));
+        Gson gson = new Gson();
+        int idPlayer;
+        String token;
+
+        DataPlayer dataPlayer = new DataPlayer(
+                faker.name().username(),
+                password,
+                password,
+                faker.letterify("????????@example.com"),
+                null,
+                null,
+                null
+        );
+
+        //создаем юзера, заодно возвращаем его айди
+        idPlayer = Integer.parseInt(given()
+                .header("Authorization", "Bearer " + guestToken)
+                .contentType(ContentType.JSON)
+                .body(gson.toJson(dataPlayer))
+                .when()
+                .post("http://test-api.d6.dev.devcaz.com/v2/players")
+                .getBody().jsonPath().getString("id"));
+
+        //получаем токен
+        String body = "{\"grant_type\":\"password\",\"username\":\"" + dataPlayer.username + "\",\"password\":\"" + dataPlayer.password_repeat + "\"}";
+
+        token = given()
+                .auth()
+                .preemptive()
+                .basic(Constants.GUEST_LOGIN, Constants.GUEST_PASSWORD)
+                .contentType(ContentType.JSON)
+                .body(body)
+                .when()
+                .post("http://test-api.d6.dev.devcaz.com/v2/oauth2/token")
+                .getBody().jsonPath().getString("access_token");
+
+        //получаем данные
+        given()
+                .header("Authorization", "Bearer " + token)
+                .when()
+                .get("http://test-api.d6.dev.devcaz.com/v2/players/" + (idPlayer - 1))
+                .then()
+                .statusCode(404);
+    }
+
     Response getGuest() {
         DataGuest dataGuest = new DataGuest();
         Gson gson = new Gson();

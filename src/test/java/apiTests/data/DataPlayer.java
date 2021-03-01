@@ -1,13 +1,13 @@
 package apiTests.data;
 
 public class DataPlayer {
-    String username;
-    String password_change;
-    String password_repeat;
-    String email;
-    String name;
-    String surname;
-    String currency_code;
+    public String username;
+    public String password_change;
+    public String password_repeat;
+    public String email;
+    public String name;
+    public String surname;
+    public String currency_code;
 
     public DataPlayer(String username,
                       String password_change,
