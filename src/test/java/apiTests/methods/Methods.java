@@ -20,11 +20,10 @@ public class Methods {
                 .basic(Constants.GUEST_LOGIN, Constants.GUEST_PASSWORD)
                 .body(gson.toJson(dataGuest))
                 .header("Accept", ContentType.JSON.getAcceptHeader())
-                .contentType(ContentType.JSON)
                 .expect()
                 .statusCode(200)
                 .when()
-                .post("/v2/oauth2/token");
+                .post(Constants.EndPoints.TOKEN);
     }
 
     public static String getTokenGuest() {
@@ -34,10 +33,9 @@ public class Methods {
     public static Response registrationPlayer(String body, String bearerToken) {
         return given()
                 .header("Authorization", "Bearer " + bearerToken)
-                .contentType(ContentType.JSON)
                 .body(body)
                 .when()
-                .post("/v2/players");
+                .post(Constants.EndPoints.PLAYERS);
     }
 
     public static Response authorizationViaPlayer(String username, String password) {
@@ -47,16 +45,15 @@ public class Methods {
                 .auth()
                 .preemptive()
                 .basic(Constants.GUEST_LOGIN, Constants.GUEST_PASSWORD)
-                .contentType(ContentType.JSON)
                 .body(body)
                 .when()
-                .post("/v2/oauth2/token");
+                .post(Constants.EndPoints.TOKEN);
     }
 
     public static Response getProfileData(String tokenPlayer, String idPlayer) {
         return given()
                 .header("Authorization", "Bearer " + tokenPlayer)
                 .when()
-                .get("/v2/players/" + idPlayer);
+                .get(Constants.EndPoints.PLAYER, idPlayer);
     }
 }

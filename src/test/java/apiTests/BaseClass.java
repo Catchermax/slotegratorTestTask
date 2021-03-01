@@ -2,6 +2,10 @@ package apiTests;
 
 import apiTests.data.Constants;
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 
@@ -9,6 +13,12 @@ import org.junit.jupiter.api.TestInstance;
 public class BaseClass {
     @BeforeAll
     void setUp() {
-        RestAssured.baseURI = Constants.BASE_URL;
+        RequestSpecification requestSpec = new RequestSpecBuilder()
+                .setBaseUri(Constants.BASE_URL)
+                .setContentType(ContentType.JSON)
+                .log(LogDetail.ALL)
+                .build();
+
+        RestAssured.requestSpecification = requestSpec;
     }
 }
