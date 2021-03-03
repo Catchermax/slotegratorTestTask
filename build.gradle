@@ -25,7 +25,7 @@ dependencies {
 
     testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
     testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
-    testImplementation "io.qameta.allure:allure-cucumber5-jvm:${allurePluginVersion}"
+    testImplementation "io.qameta.allure:allure-cucumber6-jvm:${allurePluginVersion}"
     implementation "com.codeborne:selenide:${selenideVersion}"
     implementation "io.qameta.allure:allure-selenide:${allurePluginVersion}"
 
