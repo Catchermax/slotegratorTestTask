@@ -23,7 +23,7 @@ dependencies {
     implementation group: 'org.json', name: 'json', version: '20201115'
     implementation 'com.github.javafaker:javafaker:1.0.2'
 
-    testImplementation "io.cucumber:cucumber-java8:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
     testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
     testImplementation "io.qameta.allure:allure-cucumber5-jvm:${allurePluginVersion}"
     implementation "com.codeborne:selenide:${selenideVersion}"
@@ -33,6 +33,8 @@ dependencies {
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
     testRuntimeOnly "org.junit.vintage:junit-vintage-engine:${junitVersion}"
     testImplementation('org.junit.platform:junit-platform-runner:1.7.1')
+
+    implementation group: 'com.google.guava', name: 'guava', version: '30.1-jre'
 }
 
 test {
