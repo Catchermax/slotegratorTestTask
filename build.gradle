@@ -37,40 +37,46 @@ dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: '30.1-jre'
 }
 
+allure {
+    autoconfigure = false
+    aspectjweaver = true
+    version = '2.13.8'
+}
+
 test {
     useJUnitPlatform()
 }
 
-//configurations {
-//    cucumberRuntime {
-//        extendsFrom testImplementation
-//    }
-//}
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
 
 
-//task cucumber() {
-//    dependsOn assemble, compileTestJava
-//    doLast {
-//        javaexec {
-//            systemProperty("allure.results.directory", "build/allure-results")
-//
-//            main = "io.cucumber.core.cli.Main"
-//            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
-//            args = ['--plugin', 'pretty',
-//                    '--plugin', 'io.qameta.allure.cucumber4jvm.AllureCucumber4Jvm',
-//                    '--glue',
-//                    'stepdefs', 'src/test/resources']
-//        }
-//    }
-//}
+task cucumber() {
+    dependsOn assemble, compileTestJava
+    doLast {
+        javaexec {
+            systemProperty("allure.results.directory", "build/allure-results")
 
-//allure {
-//    version = allureVersion
-//    autoconfigure = true
-//    aspectjweaver = true
-//}
-//
-//cucumber.finalizedBy 'allureReport'
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = ['--plugin', 'pretty',
+                    '--plugin', 'io.qameta.allure.cucumber6jvm.AllureCucumber6Jvm',
+                    '--glue',
+                    'uiTests/stepdefs', 'src/test/resources/features']
+        }
+    }
+}
+
+allure {
+    version = allureVersion
+    autoconfigure = true
+    aspectjweaver = true
+}
+
+cucumber.finalizedBy 'allureReport'
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL

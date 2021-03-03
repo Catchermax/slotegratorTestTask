@@ -1,5 +1,6 @@
 package uiTests.stepdefs;
 
+import com.codeborne.selenide.Condition;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import uiTests.object.blocks.LeftPanel;
@@ -20,6 +21,7 @@ public class DashboardPageSteps {
 
     @And("^on \"Dashboard page\" in the \"Left Panel\" open \"(.*)\"$")
     public void clickButtonInLeftPanel(String textButton) {
+        leftPanel.getSelf.shouldBe(visible);
         leftPanel.getSelf.find(byText(textButton)).shouldBe(visible).click();
     }
 }
